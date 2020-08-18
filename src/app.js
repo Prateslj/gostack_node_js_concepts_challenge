@@ -53,15 +53,18 @@ app.put("/repositories/:id", (request, response) => {
   const { title, url, techs } = request.body;
   const { id } = request.params;
 
-  if (!id || !title || !url || !techs) {
-    return response.status(400).json({ error: 'All parameters are required, please verify.' });
-  }
+  // if (!id || !title || !url || !techs) {
+  //   return response.status(400).json({ error: 'All parameters are required, please verify.' });
+  // }
 
   const repositoryIndex = repositories.findIndex(repository => repository.id == id);
 
   if (repositoryIndex >= 0) {
-    const { likes } = repositories[repositoryIndex];
 
+    const current_repo = repositories[repositoryIndex];
+    
+    likes = current_repo["likes"]
+    
     const repository = { 
       id,
       title,
