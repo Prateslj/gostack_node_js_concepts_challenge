@@ -61,16 +61,17 @@ app.put("/repositories/:id", (request, response) => {
 
   if (repositoryIndex >= 0) {
 
-    const current_repo = repositories[repositoryIndex];
+    //const current_repo = repositories[repositoryIndex];
     
-    likes = current_repo["likes"]
+    //likes = current_repo["likes"]
     
     const repository = { 
       id,
       title,
       url,
       techs,
-      likes
+      likes: repositories[repositoryIndex].likes
+      // This line is not mine, but works fine!
     }
 
     repositories[repositoryIndex] = repository;
@@ -90,6 +91,7 @@ app.delete("/repositories/:id", (request, response) => {
   const { id } = request.params;
 
   const repositoryIndex = repositories.findIndex(repository => repository.id == id);
+  console.log(repositoryIndex);
 
   if (repositoryIndex >= 0) {
     repositories.splice(repositoryIndex, 1);
