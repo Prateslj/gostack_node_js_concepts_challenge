@@ -11,6 +11,7 @@ app.use(cors());
 
 const repositories = [];
 
+// Validates if the repository ID is a valid one
 function validateRepoId(request, response, next) {
   const { id } = request.params;
 
@@ -24,13 +25,16 @@ function validateRepoId(request, response, next) {
 
 app.use('/repositories/:id', validateRepoId);
 
+// Gets the list of repositories
 app.get("/repositories", (request, response) => {
   return response.json(repositories); 
 });
 
+// Creates a new repository
 app.post("/repositories", (request, response) => {
   const { title, url, techs } = request.body;
 
+  // All fields are required
   if (!title || !url || !techs) {
     return response.status(400).json({ error: 'All parameters are required, please verify.' });
   }
@@ -49,6 +53,7 @@ app.post("/repositories", (request, response) => {
     return response.json(repository);
 });
 
+// Updates a repository
 app.put("/repositories/:id", (request, response) => {
   const { title, url, techs } = request.body;
   const { id } = request.params;
@@ -60,23 +65,33 @@ app.put("/repositories/:id", (request, response) => {
   const repositoryIndex = repositories.findIndex(repository => repository.id == id);
 
   if (repositoryIndex >= 0) {
+    
+    const { 
+      title: currTitle, 
+      url: currUrl, 
+      techs: currTechs, 
+      likes: currLikes 
+    } = repositories[repositoryIndex];
+    
+    newTitle = title ? title : currTitle;
 
-    //const current_repo = repositories[repositoryIndex];
+    newUrl = url ? url : currUrl;
+
+    newTechs = techs ? techs : currTechs;
     
-    //likes = current_repo["likes"]
-    
-    const repository = { 
+    const newRepository = { 
       id,
-      title,
-      url,
-      techs,
-      likes: repositories[repositoryIndex].likes
-      // This line is not mine, but works fine!
+      title: newTitle,
+      url: newUrl,
+      techs: newTechs,
+      likes: currLikes
+      //likes: repositories[repositoryIndex].likes
     }
 
-    repositories[repositoryIndex] = repository;
-
-    return response.json(repository);
+    repositories[repositoryIndex] = newRepository;
+    
+    return response.json(newRepository);
+    //return response.json(repositories[repositoryIndex]);
   } 
   else {
     return response.status(400).json({ error: 'Repository not found' });
